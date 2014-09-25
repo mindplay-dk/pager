@@ -27,14 +27,14 @@ test(
     function () {
         $pager = new ButtonPager(1, 10);
 
-        $expected = '<button disabled="disabled">&laquo;</button>'
+        $expected = '<button disabled="disabled">&laquo;</button>&nbsp;'
             .'<button name="page" value="1" disabled="disabled" class="is-active">1</button>&nbsp;'
             .'<button name="page" value="2">2</button>&nbsp;'
             .'<button name="page" value="3">3</button>&nbsp;'
             .'<button name="page" value="4">4</button>&nbsp;'
             .'<button name="page" value="5">5</button>&nbsp;'
             .'&#x22EF;&nbsp;'
-            .'<button name="page" value="10">10</button>'
+            .'<button name="page" value="10">10</button>&nbsp;'
             .'<button name="page" value="2">&raquo;</button>';
 
         eq($pager->render(), $expected, 'yay, buttons!');
@@ -46,10 +46,10 @@ test(
     function () {
         $pager = new LinkPager(1, 3);
 
-        $expected = '<a href="#">&laquo;</a>'
+        $expected = '<a href="#">&laquo;</a>&nbsp;'
             .'<a href="#1" class="is-active">1</a>&nbsp;'
             .'<a href="#2">2</a>&nbsp;'
-            .'<a href="#3">3</a>'
+            .'<a href="#3">3</a>&nbsp;'
             .'<a href="#2">&raquo;</a>';
 
         eq($pager->render(), $expected, 'renders links with hash-tags');
@@ -58,10 +58,10 @@ test(
             return "result.php?page={$page}";
         };
 
-        $expected = '<a href="#">&laquo;</a>'
+        $expected = '<a href="#">&laquo;</a>&nbsp;'
             .'<a href="result.php?page=1" class="is-active">1</a>&nbsp;'
             .'<a href="result.php?page=2">2</a>&nbsp;'
-            .'<a href="result.php?page=3">3</a>'
+            .'<a href="result.php?page=3">3</a>&nbsp;'
             .'<a href="result.php?page=2">&raquo;</a>';
 
         eq($pager->render(), $expected, 'renders links with URLs');

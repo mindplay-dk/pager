@@ -62,6 +62,8 @@ abstract class Pager
             ? $this->renderDisabled($this->prev)
             : $this->renderLink($this->active - 1, $this->prev, false);
 
+        $html .= $this->space;
+
         // numbered page links:
 
         $html_ranges = array();
@@ -85,6 +87,8 @@ abstract class Pager
         unset($html_ranges);
 
         // next page link:
+
+        $html .= $this->space;
 
         $html .= ($this->active == 1)
             ? $this->renderLink($this->active + 1, $this->next, false)
