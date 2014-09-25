@@ -6,9 +6,9 @@ mindplay/pager
 How many times have I written pagers? Too many.
 
 So here's a distilled abstract base-class for pagers, along with the two kinds of
-pagers I have used most frequently: one for <button> tags, and one for <a> tags.
+pagers I have used most frequently: one for `<button>` tags, and one for `<a>` tags.
 
-Personally I like <button> pagers, which typically require no JavaScript - it can
+Personally I like `<button>` pagers, which typically require no JavaScript - it can
 produce markup along the lines of this:
 
     <button disabled="disabled">&laquo;</button>
