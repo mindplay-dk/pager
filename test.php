@@ -23,6 +23,35 @@ test(
 );
 
 test(
+    'Next/previous button behavior',
+    function () {
+        $pager = new ButtonPager(1, 3);
+
+        ok(strpos($pager->render(), '<button disabled="disabled">&laquo;</button>') !== false,
+            'previous-button disabled when on first page');
+
+        ok(strpos($pager->render(), '<button name="page" value="2">&raquo;</button>') !== false,
+            'next-button enabled when on first page');
+
+        $pager = new ButtonPager(2, 3);
+
+        ok(strpos($pager->render(), '<button name="page" value="1">&laquo;</button>') !== false,
+            'previous-button enabled when not on first/last page');
+
+        ok(strpos($pager->render(), '<button name="page" value="3">&raquo;</button>') !== false,
+            'next-button enabled when not on first/last page');
+
+        $pager = new ButtonPager(3, 3);
+
+        ok(strpos($pager->render(), '<button name="page" value="2">&laquo;</button>') !== false,
+            'previous-button enabled when on last page');
+
+        ok(strpos($pager->render(), '<button disabled="disabled">&raquo;</button>') !== false,
+            'next-button disabled when on last page');
+    }
+);
+
+test(
     'ButtonPager works nicely',
     function () {
         $pager = new ButtonPager(1, 10);
