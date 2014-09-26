@@ -90,7 +90,7 @@ abstract class Pager
 
         $html .= $this->space;
 
-        $html .= ($this->active == 1)
+        $html .= ($this->active < $this->total)
             ? $this->renderLink($this->active + 1, $this->next, false)
             : $this->renderDisabled($this->next);
 
