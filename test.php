@@ -11,14 +11,76 @@ use mindplay\pager\LinkPager;
 test(
     'Computes meaningful page ranges',
     function () {
-        eq(Pager::getPageRanges(1,10,5), array(array(1,2,3,4,5),array(10)), 'left-most at start of short range');
-        eq(Pager::getPageRanges(5,10,5), array(array(1,2,3,4,5),array(10)), 'left-most near end of short range');
-        eq(Pager::getPageRanges(6,10,5), array(array(1), array(6,7,8,9,10)), 'right-most at start of short range');
-        eq(Pager::getPageRanges(1,10,20), array(array(1,2,3,4,5,6,7,8,9,10)), 'range longer than total');
-        eq(Pager::getPageRanges(1,100,10), array(array(1,2,3,4,5,6,7,8,9,10),array(100)), 'left-most at start of long range');
-        eq(Pager::getPageRanges(50,100,10), array(array(1),array(45,46,47,48,49,50,51,52,53,54,55),array(100)), 'middle of range');
-        eq(Pager::getPageRanges(95,100,5), array(array(1),array(93,94,95,96,97),array(100)), 'right-most near end of long range');
-        eq(Pager::getPageRanges(96,100,5), array(array(1),array(96,97,98,99,100)), 'right-most within end of long range');
+        expectRanges(1, 1, 5, '[1]');
+
+        expectRanges(1, 2, 5, '[1] 2');
+        expectRanges(2, 2, 5, '1 [2]');
+
+        expectRanges(1, 3, 5, '[1] 2 3');
+        expectRanges(2, 3, 5, '1 [2] 3');
+        expectRanges(3, 3, 5, '1 2 [3]');
+
+        expectRanges(1, 5, 5, '[1] 2 3 4 5');
+        expectRanges(2, 5, 5, '1 [2] 3 4 5');
+        expectRanges(3, 5, 5, '1 2 [3] 4 5');
+        expectRanges(4, 5, 5, '1 2 3 [4] 5');
+        expectRanges(5, 5, 5, '1 2 3 4 [5]');
+
+        expectRanges(1, 8, 5, '[1] 2 3 4 5 6 7 8');
+        expectRanges(2, 8, 5, '1 [2] 3 4 5 6 7 8');
+        expectRanges(3, 8, 5, '1 2 [3] 4 5 6 7 8');
+        expectRanges(4, 8, 5, '1 2 3 [4] 5 6 7 8');
+        expectRanges(5, 8, 5, '1 2 3 4 [5] 6 7 8');
+        expectRanges(6, 8, 5, '1 2 3 4 5 [6] 7 8');
+        expectRanges(7, 8, 5, '1 2 3 4 5 6 [7] 8');
+        expectRanges(8, 8, 5, '1 2 3 4 5 6 7 [8]');
+
+        expectRanges(1, 9, 5, '[1] 2 3 4 5 6 7 8 9');
+        expectRanges(2, 9, 5, '1 [2] 3 4 5 6 7 8 9');
+        expectRanges(3, 9, 5, '1 2 [3] 4 5 6 7 8 9');
+        expectRanges(4, 9, 5, '1 2 3 [4] 5 6 7 8 9');
+        expectRanges(5, 9, 5, '1 2 3 4 [5] 6 7 8 9');
+        expectRanges(6, 9, 5, '1 2 3 4 5 [6] 7 8 9');
+        expectRanges(7, 9, 5, '1 2 3 4 5 6 [7] 8 9');
+        expectRanges(8, 9, 5, '1 2 3 4 5 6 7 [8] 9');
+        expectRanges(9, 9, 5, '1 2 3 4 5 6 7 8 [9]');
+
+        expectRanges(1, 10, 5, '[1] 2 3 4 5 .. 10');
+        expectRanges(2, 10, 5, '1 [2] 3 4 5 .. 10');
+        expectRanges(3, 10, 5, '1 2 [3] 4 5 .. 10');
+        expectRanges(4, 10, 5, '1 2 3 [4] 5 6 .. 10');
+        expectRanges(5, 10, 5, '1 2 3 4 [5] 6 7 .. 10');
+        expectRanges(6, 10, 5, '1 .. 4 5 [6] 7 8 9 10');
+        expectRanges(7, 10, 5, '1 .. 5 6 [7] 8 9 10');
+        expectRanges(8, 10, 5, '1 .. 5 6 7 [8] 9 10');
+        expectRanges(9, 10, 5, '1 .. 5 6 7 8 [9] 10');
+        expectRanges(10, 10, 5, '1 .. 5 6 7 8 9 [10]');
+
+        expectRanges(1, 11, 5, '[1] 2 3 4 5 .. 11');
+        expectRanges(2, 11, 5, '1 [2] 3 4 5 .. 11');
+        expectRanges(3, 11, 5, '1 2 [3] 4 5 .. 11');
+        expectRanges(4, 11, 5, '1 2 3 [4] 5 6 .. 11');
+        expectRanges(5, 11, 5, '1 2 3 4 [5] 6 7 .. 11');
+        expectRanges(6, 11, 5, '1 .. 4 5 [6] 7 8 .. 11');
+        expectRanges(7, 11, 5, '1 .. 5 6 [7] 8 9 10 11');
+        expectRanges(8, 11, 5, '1 .. 6 7 [8] 9 10 11');
+        expectRanges(9, 11, 5, '1 .. 6 7 8 [9] 10 11');
+        expectRanges(10, 11, 5, '1 .. 6 7 8 9 [10] 11');
+        expectRanges(11, 11, 5, '1 .. 6 7 8 9 10 [11]');
+
+        expectRanges(1, 12, 5, '[1] 2 3 4 5 .. 12');
+        expectRanges(2, 12, 5, '1 [2] 3 4 5 .. 12');
+        expectRanges(3, 12, 5, '1 2 [3] 4 5 .. 12');
+        expectRanges(4, 12, 5, '1 2 3 [4] 5 6 .. 12');
+        expectRanges(5, 12, 5, '1 2 3 4 [5] 6 7 .. 12');
+        expectRanges(6, 12, 5, '1 .. 4 5 [6] 7 8 .. 12');
+        expectRanges(7, 12, 5, '1 .. 5 6 [7] 8 9 .. 12');
+        expectRanges(8, 12, 5, '1 .. 6 7 [8] 9 10 11 12');
+        expectRanges(9, 12, 5, '1 .. 7 8 [9] 10 11 12');
+        expectRanges(10, 12, 5, '1 .. 7 8 9 [10] 11 12');
+        expectRanges(11, 12, 5, '1 .. 7 8 9 10 [11] 12');
+        expectRanges(12, 12, 5, '1 .. 7 8 9 10 11 [12]');
+
     }
 );
 
@@ -98,6 +160,35 @@ test(
 );
 
 exit(status());
+
+/**
+ * Test expectation of computed page-ranges
+ *
+ * @param int $active
+ * @param int $total
+ * @param int $range
+ * @param string $expected
+ *
+ * @see Pager::getPageRanges()
+ */
+function expectRanges($active, $total, $range, $expected) {
+    $ranges = Pager::getPageRanges($active, $total, $range);
+
+    $result = implode(
+        ' .. ',
+        array_map(
+            function ($range) use ($active) {
+                $range = array_map(function ($page) use ($active) {
+                    return $page == $active ? "[{$page}]" : $page;
+                }, $range);
+                return implode(' ', $range);
+            },
+            $ranges
+        )
+    );
+
+    eq($result, $expected, sprintf('page %2d of %2d with a range of %2d', $active, $total, $range));
+}
 
 // https://gist.github.com/mindplay-dk/4260582
 

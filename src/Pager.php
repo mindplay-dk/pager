@@ -112,33 +112,41 @@ abstract class Pager
             return array(); // no ranges
         }
 
-        if ($total <= $range + 2) {
-            // all numbers fit in a single range:
-            return array(range(1, $total));
-        }
+        $range = max(3, $range % 2 ? $range : $range + 1); // nearest odd number
 
-        if ($active <= $range) {
-            // numbers partition on the right:
+        $spread = (int) (($range - 1) * 0.5); // range in either direction
+
+        if ($total <= $range + 4) {
+            // full range:
             return array(
-                range(1, $range), // first pages
-                array($total) // last page
+                range(1, $total)
             );
         }
 
-        if ($active >= $total - $range + 1) {
-            // numbers partition on the left:
+        $left = $active - $spread;
+        $right = $active + $spread;
+
+        if ($left <= $spread + 1) {
+            // left range:
             return array(
-                array(1), // first page
-                range($total - $range + 1, $total) // last pages
+                range(1, max($range, $right)),
+                array($total)
             );
         }
 
-        // numbers partition both on the left and on the right:
-        $half = (int) floor($range * 0.5);
+        if ($right >= $total - $spread) {
+            // right range:
+            return array(
+                array(1),
+                range(min(max($left, 1), $total - $range), $total)
+            );
+        }
+
         return array(
-            array(1), // first page
-            range($active - $half, $active + $half), // middle pages
-            array($total) // last page
+            // middle range:
+            array(1),
+            range($left, $right),
+            array($total)
         );
     }
 
